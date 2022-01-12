@@ -1,0 +1,21 @@
+{
+  "name": "color-scraper",
+  "version": "1.0.0",
+  "description": "Tool to extract colors from coolors.co",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scrapper",
+    "web",
+    "tool",
+    "project"
+  ],
+  "author": "AyDev",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^13.0.1"
+  }
+}
