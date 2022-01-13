@@ -6,7 +6,7 @@
 export const repeatWord = (word, times) => {
     let words = [];
 
-    while(words.length < times) {
+    while(words.toString().length < times) {
         words.push(word);
     }
 
