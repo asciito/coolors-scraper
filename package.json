@@ -4,8 +4,8 @@
   "description": "Tool to extract colors from coolors.co",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node . --experimental-vm-modules",
+    "test": "jest"
   },
   "keywords": [
     "scrapper",
