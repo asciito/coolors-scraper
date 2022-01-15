@@ -91,27 +91,5 @@ exports.isColor = color => {
      * - Validate is a color
      * - Expand the color
      */
-    return expand(color.toUpperCase());
+    return this.expand(color.toUpperCase());
 }
-
-/**
- * Callback function to be use it with the selection of the palette elements
- * 
- * @param {NodeList} palette
- * @returns {Object} The information about the palette
- */
- exports.paletteStripe = palette => {
-    const paletteData = {};
-
-    palette.forEach(color => {
-        const hex = color.querySelector('span').innerText;
-        const classes = Array.from(color.classList);
-
-        colorData[hex] = {
-            active: classes.includes('is-active'),
-            isLight: Array.from(color.classList).includes('is-light'),
-        }
-    });
-
-    return paletteData;
-};
