@@ -9,63 +9,39 @@ class Coolors
         this._page = getPage(color);
         this._colors = {
             hex: `#${normalizeColor(color)}`,
-            stripes: {},
+            variations: {},
+            harmonies: {},
         };
     }
 
-    /**
-     * Extract the shades of the color you choose
-     * 
-     * @returns 
-     */
-    async getShades() {
-        if (! this._colors.stripes['shades']) {
-            const { page } = await this._page;
-            await page.waitForSelector('.palette-stripe_colors');
+    async getVariations(variations) {
+        if (! Array.isArray(variations) && ! this._colors.variations[variations]) {
 
-            this._colors.stripes['shades'] = await page.$$eval(this._selectStripe('shades'), this._paletteStripe);
+            this._colors.variations[variations] = await this._getVariation(variations);
+
+        } else {
+
+            for (let variation of variations) {
+                if (this._colors.variations[variation.toString()]) {
+                    continue;
+                }
+
+                this._colors.variations[variation] = await this._getVariation(variation);
+            }
+
         }
     }
 
-     /**
-     * Extract the tints of the color you choose
-     * 
-     * @returns 
-     */
-    async getTints() {
-        if (! this._colors.stripes['tints']) {
-            const { page } = await this._page;
-            await page.waitForSelector('.palette-stripe_colors');
+    async getCombinations(combinations) {
+        if (! Array.isArray(combinations) && ! this._colors.harmonies[combinations]) {
+            this._colors.harmonies[combinations] = await this._getCombination(combinations);
+        } else {
+            for (let combination of combinations) {
+                if (this._colors.harmonies[combination.toString()]) continue;
+                
+                this._colors.harmonies[combination] = await this._getCombination(combination);
+            }
 
-            this._colors.stripes['tints'] = await page.$$eval(this._selectStripe('tints'), this._paletteStripe);
-        }
-    }
-
-    /**
-     * Extract the tones of the color you choose
-     * 
-     * @returns 
-     */
-    async getTones() {
-        if (! this._colors.stripes['tones']) {
-            const { page } = await this._page;
-            await page.waitForSelector('.palette-stripe_colors');
-
-            this._colors.stripes['tones'] = await page.$$eval(this._selectStripe('tones'), this._paletteStripe);
-        }
-    }
-
-    /**
-     * Extract the hues of the color you choose
-     * 
-     * @returns 
-     */
-    async getHues() {
-        if (! this._colors.stripes['hues']) {
-            const { page } = await this._page;
-            await page.waitForSelector('.palette-stripe_colors');
-
-            this._colors.stripes['hues'] = await page.$$eval(this._selectStripe('hues'), this._paletteStripe);
         }
     }
 
@@ -74,7 +50,7 @@ class Coolors
     }
 
     async close() {
-        const {page, browser} = await this._page;
+        const { page, browser } = await this._page;
 
         await page.close();
         await browser.close();
@@ -102,8 +78,26 @@ class Coolors
         return paletteData;
     };
 
-    _selectStripe(option) {
-        return `#color-picker-page_variations_${ option } .palette-stripe_colors > div[style]`;
+    async _getCombination(type) {
+        const { page } = await this._page;
+        await page.waitForSelector('.palette-stripe_colors');
+
+        return await page.$$eval(this._selectCombination(type), this._paletteStripe);
+    }
+
+    async _getVariation(type) {
+        const { page } = await this._page;
+        await page.waitForSelector('.palette-stripe_colors');
+
+        return await page.$$eval(this._selectVariation(type), this._paletteStripe);
+    }
+
+    _selectCombination(type) {
+        return `#color-picker-page_combinations_${ type } .palette-stripe_colors > div[style]`;
+    }
+
+    _selectVariation(type) {
+        return `#color-picker-page_variations_${ type } .palette-stripe_colors > div[style]`;
     }
 }
 

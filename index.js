@@ -6,10 +6,9 @@ const cool = new Coolors('f3b3b4');
 
 // Simple example of the use
 (async () => {
-    await cool.getTints();
-    await cool.getShades();
-    await cool.getHues();
-    await cool.getTones();
+    await cool.getVariations(['hues', 'tints', 'shades']);
+
+    await cool.getCombinations(['triadic', 'analogous']);
 
     await cool.close();
 
