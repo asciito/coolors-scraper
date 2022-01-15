@@ -1,6 +1,6 @@
-import { repeatWord } from "./stringHelpers";
+const { repeatWord } = require("./stringHelpers.js");
 
-export const COLORS = {
+exports.COLORS = {
     white: 'FFFFFF',
 };
 
@@ -12,16 +12,15 @@ export const COLORS = {
  */
 const isHex = (hex) => Boolean(hex.toString().match(/[0-9a-f]+$/i));
 
-export const isColor = color => {
+exports.isColor = color => {
     const white = 0xFFFFFF;
     const black = 0x000000;
-
     
     if (! isHex(color)) {
         return false;
     }
 
-    return color >= white && color <= black;
+    return parseInt(color, 16) <= white && parseInt(color, 16) >= black;
 }
 
 /**
@@ -31,20 +30,23 @@ export const isColor = color => {
  * @returns {string} The expanded color
  * @throws Throws an error if the value is not a color
  */
-export const expand = color => {
+ exports.expand = color => {
+    const length = color.length;
 
-    if (! isColor(color)) {
+    if (! this.isColor(color)) {
         throw Error('The value is not a color');
     }
 
-    if (color.length > 3 || color.length <= 0) return color;
+    if (length > 6 || length <= 0) return color;
 
-    if (color.length === 3) {
+    if (length > 3) {
+        return color.slice(0, length - 1) + repeatWord(color.charAt(length - 1), 7 - length);
+    } else if (length === 3) {
         return repeatWord(color.charAt(0), 2) + repeatWord(color.charAt(1), 2) + repeatWord(color.charAt(2), 2);
-    } else if (color.length === 2) {
-        return repeatWord(color.charAt(0), 3) + repeatWord(color.charAt(1), 3);
+    } else if (length === 2) {
+        return repeatWord(color, 3);
     } else {
-        return repeatWord(color.charAt(0), 6);
+        return repeatWord(color, 6);
     }
 }
 
@@ -54,7 +56,7 @@ export const expand = color => {
  * @param {string} color 
  * @returns {boolean}
  */
-export const isWhite = color => expand(color) === COLORS.white;
+ exports.isWhite = color => expand(color) === COLORS.white;
 
 /**
  * Add transparency to the color
@@ -62,7 +64,7 @@ export const isWhite = color => expand(color) === COLORS.white;
  * @param {String } color 
  * @param {Number} procentage  The porcentage needs to be greater or equal to 0, and less or equal to 1
  */
-export const addTransparency = (color, porcentage = 0) => {
+ exports.addTransparency = (color, porcentage = 0) => {
 
     if (! isColor(color)) {
         throw Error('You cannot add transparency to a non color');        
@@ -83,7 +85,7 @@ export const addTransparency = (color, porcentage = 0) => {
  * @param {String} color 
  * @returns 
  */
- export const normalizeColor = color => {
+ exports.normalizeColor = color => {
     /**
      * TODO:
      * - Validate is a color
@@ -98,7 +100,7 @@ export const addTransparency = (color, porcentage = 0) => {
  * @param {NodeList} palette
  * @returns {Object} The information about the palette
  */
-export const paletteStripe = palette => {
+ exports.paletteStripe = palette => {
     const paletteData = {};
 
     palette.forEach(color => {
