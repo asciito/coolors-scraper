@@ -1,35 +1,19 @@
-import { Browser, launch } from "puppeteer";
-
+const browserPromise = require('./browser');
 
 /**
  * Open a new page in the browser
  * 
- * TODO:
- * - Remove the browser
- * - Create the browser in other place
- * - Split the responsabilities
- * 
  * @param {string} color The color you want to extract the information
- * @returns {Browser}
+ * @returns {Promise<Page>}
  */
-export default function getPage(color) {
-    try {
-        console.log('Launching the browser...')
+module.exports = async function getPage(color) {
+    const browser = await browserPromise();
+    const page = await browser.newPage();
+    
+    await page.goto(`https://coolors.co/${color}`, { waitUntil: 'domcontentloaded'});
 
-        const browser = await launch({
-            headless: true,
-            ignoreHTTPSErrors: true,
-        });
-
-        const page = await browser.newPage();
-
-        console.log('Opening a new page...');
-        await page.goto(`https://coolors.co/${color}`, { waitUntil: 'domcontentloaded'});
-
-        return page;
-    } catch (error) {
-        console.log('There has been and error: ' + error);
-        
-        throw Error("Couldn't launch the browser");
-    }
+    return {
+        page,
+        browser
+    };
 }
